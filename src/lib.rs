@@ -21,6 +21,12 @@
 // #![warn(missing_docs)]
 
 pub mod builder;
+
+/// Include a source for clap command line arguments if the clap
+/// feature is enabled.
+#[cfg(feature = "clap")]
+pub mod clap;
+
 mod config;
 mod de;
 mod env;
