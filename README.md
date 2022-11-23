@@ -23,8 +23,10 @@
 [RON]: https://github.com/ron-rs/ron
 [JSON5]: https://github.com/callum-oakley/json5-rs
 
-Please note that this library can not be used to write changed configuration
-values back to the configuration file(s)!
+Please note this library
+
+ - can not be used to write changed configuration values back to the configuration file(s)!
+ - Is case insensitive and all the keys are converted to lowercase internally
 
 ## Usage
 
@@ -56,7 +58,7 @@ more usage information.
 
 ## MSRV
 
-We currently support Rust 1.56.1 and newer.
+We currently support Rust 1.59.0 and newer.
 
 
 ## License

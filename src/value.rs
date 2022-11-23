@@ -309,7 +309,7 @@ impl Value {
                 }
             }
 
-            ValueKind::Boolean(value) => Ok(if value { 1 } else { 0 }),
+            ValueKind::Boolean(value) => Ok(i64::from(value)),
             ValueKind::Float(value) => Ok(value.round() as i64),
 
             // Unexpected type
@@ -362,7 +362,7 @@ impl Value {
                 }
             }
 
-            ValueKind::Boolean(value) => Ok(if value { 1 } else { 0 }),
+            ValueKind::Boolean(value) => Ok(i128::from(value)),
             ValueKind::Float(value) => Ok(value.round() as i128),
 
             // Unexpected type
@@ -428,7 +428,7 @@ impl Value {
                 }
             }
 
-            ValueKind::Boolean(value) => Ok(if value { 1 } else { 0 }),
+            ValueKind::Boolean(value) => Ok(u64::from(value)),
             ValueKind::Float(value) => Ok(value.round() as u64),
 
             // Unexpected type
@@ -487,7 +487,7 @@ impl Value {
                 }
             }
 
-            ValueKind::Boolean(value) => Ok(if value { 1 } else { 0 }),
+            ValueKind::Boolean(value) => Ok(u128::from(value)),
             ValueKind::Float(value) => Ok(value.round() as u128),
 
             // Unexpected type
@@ -761,15 +761,30 @@ impl<'de> Deserialize<'de> for Value {
             }
 
             #[inline]
-            fn visit_u64<E>(self, value: u64) -> ::std::result::Result<Value, E> {
-                // FIXME: This is bad
-                Ok((value as i64).into())
+            fn visit_u64<E>(self, value: u64) -> ::std::result::Result<Value, E>
+            where
+                E: ::serde::de::Error,
+            {
+                let num: i64 = value.try_into().map_err(|_| {
+                    E::invalid_type(::serde::de::Unexpected::Unsigned(value), &self)
+                })?;
+                Ok(num.into())
             }
 
             #[inline]
-            fn visit_u128<E>(self, value: u128) -> ::std::result::Result<Value, E> {
-                // FIXME: This is bad
-                Ok((value as i128).into())
+            fn visit_u128<E>(self, value: u128) -> ::std::result::Result<Value, E>
+            where
+                E: ::serde::de::Error,
+            {
+                let num: i128 = value.try_into().map_err(|_| {
+                    E::invalid_type(
+                        ::serde::de::Unexpected::Other(
+                            format!("integer `{}` as u128", value).as_str(),
+                        ),
+                        &self,
+                    )
+                })?;
+                Ok(num.into())
             }
 
             #[inline]
